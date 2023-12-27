@@ -1,14 +1,15 @@
 import type { MetaFunction } from "@remix-run/node";
+import DefaultLayout from '~/layouts/default'
 export const meta: MetaFunction = () => {
   return [
-    { title: "Nsew Remix App" },
+    { title: "New das App" },
     { name: "description", content: "Welcome to Remix!" },
   ];
 };
 
 export default function Index() {
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
+    <DefaultLayout>
       <h1>Welcome to Remix</h1>
       <ul>
         <li>
@@ -35,6 +36,7 @@ export default function Index() {
           </a>
         </li>
       </ul>
-    </div>
+    </DefaultLayout>
+
   );
 }
