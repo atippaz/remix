@@ -12,9 +12,11 @@ export default function DefaultLayout({ children }: DefaultLayout) {
   const navigate = useNavigate()
   const location = useLocation();
   const menuRoutes: MenuRoute[] = [
+    { label: 'Mail', value: '/mail' },
     { label: 'DashBoard', value: '/dashboard' },
+    { label: 'Tasks', value: '/tasks' },
+    { label: 'Forms', value: '/forms' },
     { label: 'Music', value: '/music' },
-    { label: 'Mail', value: '/mail' }
 
   ]
   const valueMenu = menuRoutes.some(x => x.value == location.pathname) ? location.pathname : ""
@@ -25,13 +27,13 @@ export default function DefaultLayout({ children }: DefaultLayout) {
     navigate(url)
   }
   return (
-    <div className="w-screen h-screen p-8">
+    <div className="w-full h-full p-8">
       <div>
         <div >
           <div>
             <div className="text-center">
-              <h1 className="text-center text-3xl font-bold leading-tight tracking-tighter md:text-6xl lg:leading-[1.1] md:hidden">Examples</h1>
-              <p className="max-w-[750px] text-center text-lg text-muted-foreground sm:text-xl">
+              <p className="text-center text-3xl font-bold ">Check out some examples</p>
+              <p className="text-center text-lg text-muted-foreground">
                 Dashboard, cards, authentication. Some examples built using the components. Use this as a guide to build your own.
               </p>
             </div>
@@ -43,12 +45,14 @@ export default function DefaultLayout({ children }: DefaultLayout) {
 
             </div>
           </div>
-          <div>
+          <div >
             <ToggleGroup type="single" value={valueMenu}
+              size="sm"
+              className="flex justify-start"
               onValueChange={(value) => {
                 redirectPage(value)
               }}>
-              {menuRoutes.map((e, index) => <ToggleGroupItem key={index} value={e.value} >{e.label}</ToggleGroupItem>)}
+              {menuRoutes.map((e, index) => <ToggleGroupItem className="rounded-full px-3" key={index} value={e.value} >{e.label}</ToggleGroupItem>)}
             </ToggleGroup>
           </div>
         </div>
