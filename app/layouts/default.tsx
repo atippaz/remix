@@ -52,7 +52,9 @@ export default function DefaultLayout({ children }: DefaultLayout) {
             </ToggleGroup>
           </div>
         </div>
+        <div className="pt-4">
         {children}
+        </div>
       </div>
     </div>
   );
