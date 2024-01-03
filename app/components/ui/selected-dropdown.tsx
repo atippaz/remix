@@ -78,15 +78,20 @@ export default function Index() {
     //   ),
     // })
   }
+  const flatData = {
+    get value(): DropdownValue[] {
+      const state: DropdownValue[] = []
+      dataDropdown.forEach(x => x.values.forEach(m => {
+        state.push({
+          value: m.value,
+          label: m.label
+        })
+      }))
+      return state
+    }
+  };
   function findValue(value: string) {
-    const flatData: DropdownValue[] = []
-    dataDropdown.forEach(x => x.values.forEach(m => {
-      flatData.push({
-        value: m.value,
-        label: m.label
-      })
-    }))
-    const valueFinder = flatData.find(x => x.value == value)
+    const valueFinder = flatData.value.find(x => x.value == value)
     return valueFinder == null ? "Select framework..." : valueFinder.label
   }
   return (

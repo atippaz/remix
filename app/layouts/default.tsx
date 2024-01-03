@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { Button } from "~/components/ui/button";
+import { ReactNode, useEffect } from "react"
+import { Button } from "~/components/ui/button"
 import { useLocation, useNavigate } from "@remix-run/react";
 
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group"
@@ -10,7 +10,7 @@ interface MenuRoute {
 }
 export default function DefaultLayout({ children }: DefaultLayout) {
   const navigate = useNavigate()
-  const location = useLocation();
+  const location = useLocation()
   const menuRoutes: MenuRoute[] = [
     { label: 'Mail', value: '/mail' },
     { label: 'DashBoard', value: '/dashboard' },
@@ -24,10 +24,18 @@ export default function DefaultLayout({ children }: DefaultLayout) {
     if (url == null || url == '') {
       return
     }
-    navigate(url)
+    navigate('/example' + url)
   }
+
+
+  useEffect(() => {
+    if (valueMenu == '') {
+      redirectPage(valueMenu)
+    }
+  }, [valueMenu])
+
   return (
-    <div className="w-full h-full p-8">
+    <div className="w-full h-full p-12">
       <div>
         <div >
           <div>

@@ -1,15 +1,14 @@
-import type { MetaFunction } from "@remix-run/node";
-import DefaultLayout from '~/layouts/default'
-
-export const meta: MetaFunction = () => {
-  return [
-    { title: "Nsew Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
-};
-
+import { useNavigate } from "@remix-run/react";
+import { useEffect } from "react";
 export default function Index() {
+  const navigate = useNavigate()
+  useEffect(() => {
+    navigate('/example')
+
+  }, [])
   return (
-    <DefaultLayout>s</DefaultLayout>
+    <>
+
+    </>
   );
 }
