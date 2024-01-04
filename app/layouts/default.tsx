@@ -12,19 +12,22 @@ export default function DefaultLayout({ children }: DefaultLayout) {
   const navigate = useNavigate()
   const location = useLocation()
   const menuRoutes: MenuRoute[] = [
-    { label: 'Mail', value: '/mail' },
-    { label: 'DashBoard', value: '/dashboard' },
-    { label: 'Tasks', value: '/tasks' },
-    { label: 'Forms', value: '/forms' },
-    { label: 'Music', value: '/music' },
+    { label: 'Mail', value: '/example/mail' },
+    { label: 'DashBoard', value: '/example/dashboard' },
+    { label: 'Tasks', value: '/example/tasks' },
+    { label: 'Forms', value: '/example/forms' },
+    { label: 'Music', value: '/example/music' },
 
   ]
-  const valueMenu = menuRoutes.some(x => x.value == location.pathname) ? location.pathname : ""
+  console.log(location.pathname);
+  console.log(menuRoutes);
+
+  const valueMenu = menuRoutes.some(x => x.value === `${location.pathname}`) ? location.pathname : ""
   function redirectPage(url: string) {
     if (url == null || url == '') {
       return
     }
-    navigate('/example' + url)
+    navigate(url)
   }
 
 
