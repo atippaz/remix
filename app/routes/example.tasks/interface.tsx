@@ -1,5 +1,5 @@
 export type TaskType = "Feature" | "Bug" | "Documentation"
-export type TaskStatus = "Todo" | "Backlog" | "Done" | "In Progress"
+export type TaskStatus = "Todo" | "Backlog" | "Done" | "In Progress" | "Canceled"
 export type TaskPriority = "Medium" | "High" | "Low"
 export interface Task {
   id: string

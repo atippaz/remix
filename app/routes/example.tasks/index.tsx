@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import SelectedDropdown, { DropdownValue, type DropdownGroup } from "~/components/ui/selected-dropdown"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -22,8 +23,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover
 import { Command, CommandGroup, CommandItem, CommandShortcut } from "~/components/ui/command";
 import { cn } from "~/lib/utils";
 import { Task, TaskPriority, TaskStatus, TaskType } from "./interface";
-import { useState } from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
+import { useEffect, useState } from "react";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import { Checkbox } from "~/components/ui/checkbox";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from "~/components/ui/navigation-menu";
 export const meta: MetaFunction = () => {
@@ -34,16 +35,16 @@ export const meta: MetaFunction = () => {
 };
 function iconStatus(status: TaskStatus) {
   if (status == "In Progress") {
-    return <HelpCircle />
+    return <HelpCircle className="text-slate-600 w-[15px]" />
   }
   if (status == "Backlog") {
-    return <AlarmClockCheck />
+    return <AlarmClockCheck className="text-slate-600 w-[15px]" />
   }
   if (status == "Todo") {
-    return <Circle />
+    return <Circle className="text-slate-600 w-[15px]" />
   }
   if (status == "Done") {
-    return <CheckCircle2 />
+    return <CheckCircle2 className="text-slate-600 w-[15px]" />
   }
 }
 const taskDataTable: Task[] = [
@@ -71,21 +72,20 @@ const pageSize = [
   },
 ]
 export default function Tasks() {
-  const status: TaskStatus[] = ["Todo", "In Progress", "Done", "Backlog"]
+  const status: TaskStatus[] = ["Todo", "In Progress", "Done", "Backlog", 'Canceled']
   const priority: TaskPriority[] = ["High", "Low", "Medium"]
   const catagory: TaskType[] = ["Bug", "Documentation", "Feature"]
   while (taskDataTable.length < 100) {
     const task: Task = {
       catagory: catagory[Math.round(Math.random() * 2)],
       id: `TASK-878${taskDataTable.length}`,
-      title: "You can't compress the program without quantifying the open-source SSD piaksdkas" + Math.random() * 431,
+      title: "You can't compress the program without quantifying the open-source SSD piaksdkas" + Math.random() * 12324 * 4386709876541,
       status: status[Math.round(Math.random() * 3)],
       priority: priority[Math.round(Math.random() * 2)]
     }
     taskDataTable.push(task)
   }
 
-  console.log(taskDataTable);
 
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
@@ -125,20 +125,22 @@ export default function Tasks() {
     },
     {
       accessorKey: "id",
-      header: "Task",
+      header: () => <p className="pr-12">Task</p>,
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("id")}</div>
+        <div className="">{row.getValue("id")}</div>
       ),
+      enableHiding: false,
     },
     {
       accessorKey: "title",
       header: ({ column }) => {
         return (
           <Button
+            className="ml-2"
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            TItle
+            Title
             <div>
               <ChevronUp className="ml-2 h-3 w-3" />
               <ChevronDown className="ml-2 h-3 w-3 -mt-1" />
@@ -148,16 +150,17 @@ export default function Tasks() {
       },
       cell: ({ row }) => {
         return (
-          <div className="p-4 flex gap-2 capitalize font-bold">
-            <span className="border-solid border rounded-md border-slate-200 px-2">
+          <div className="px-4 flex w-[70%] gap-2 capitalize font-bold">
+            <div className="border-solid border h-fit rounded-md border-slate-200 px-2 ml-2">
               {`${row.getValue("catagory")}`}
-            </span>
-            <span>
+            </div>
+            <p className="line-clamp-1">
               {`${row.getValue("title")}`}
-            </span>
+            </p>
           </div>
         )
-      }
+      },
+      enableHiding: true,
     },
     {
       accessorKey: "status",
@@ -165,7 +168,7 @@ export default function Tasks() {
         return (
           <Button
             variant="ghost"
-            className="flex justify-start"
+            className="flex w-[130px] justify-start"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Status
@@ -177,11 +180,14 @@ export default function Tasks() {
         )
       },
       cell: ({ row }) => (
-        <div className="p-4 capitalize">
+        <div className="mr-4 flex gap-2 capitalize">
           {iconStatus(row.getValue("status"))}
           {row.getValue("status")}
         </div>
       ),
+      enableHiding: true,
+      enableColumnFilter: true,
+      enableGrouping: true
     },
     {
       accessorKey: "priority",
@@ -200,13 +206,15 @@ export default function Tasks() {
         )
       },
       cell: ({ row }) => (
-        <div className="p-4 capitalize">{row.getValue("priority")}</div>
+        <div className="mx-4 capitalize">{row.getValue("priority")}</div>
       ),
+      enableHiding: true,
     },
     {
       accessorKey: "catagory",
       header: '',
-      cell: ''
+      cell: '',
+      enableHiding: false,
     },
     {
       id: "actions",
@@ -270,6 +278,7 @@ export default function Tasks() {
       },
     },
   ]
+
   const table = useReactTable({
     data: taskDataTable,
     columns,
@@ -288,22 +297,63 @@ export default function Tasks() {
       rowSelection,
     },
   })
-
+  const [textSearch, setTextSearch] = useState('')
+  const [openStatus, setOpenStatus] = useState(false)
+  const [statusFilterValue, setStatusFilterValue] = useState('')
+  const dataStatusDropdown: DropdownGroup[] = [{
+    groupId: null, groupLabel: null, options: status.map(x => {
+      return {
+        label: `${x} (${table.getFilteredRowModel().rows.filter(f => f.getValue('status') == x).length})`,
+        value: x
+      }
+    })
+  }]
   return (
     <Card className="p-2">
       <CardHeader>
-        <CardTitle>Welcome back!</CardTitle>
-        <CardDescription>{"Here's a list of your tasks for this month!"}</CardDescription>
+        <CardTitle>
+          <p className="text-2xl font-bold tracking-tight">
+            Welcome back!
+          </p>
+        </CardTitle>
+        <CardDescription>
+          <p className="text-muted-foreground font-[600]">
+
+            {"Here's a list of your tasks for this month!"}
+          </p>
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex justify-between">
           <div className="flex gap-2">
-            <Input placeholder="Filter tasks..."></Input>
-            <Button className="border-dashed" variant="outline">Status</Button>
+            <Input placeholder="Filter tasks..." value={(table.getColumn("title")?.getFilterValue() as string) ?? ""} onChange={(event) =>
+              table.getColumn("title")?.setFilterValue(event.target.value)
+            }></Input>
+            <SelectedDropdown open={openStatus} value={statusFilterValue} onOpen={(e: boolean) => setOpenStatus(e)} OnSelectValue={(e: string) => { setStatusFilterValue(e); table.getColumn("status")?.setFilterValue(statusFilterValue) }} values={dataStatusDropdown} label="team" >
+              <Button className="border-dashed" variant="outline">Status</Button>
+            </SelectedDropdown>
             <Button className="border-dashed" variant="outline">Priority</Button>
           </div>
           <div>
-            <Button variant="outline">view</Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">view</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {table.getAllColumns().filter((column) => column.getCanHide()).map(e => {
+                  return (<DropdownMenuCheckboxItem
+                    checked={e.getIsVisible()}
+                    onCheckedChange={(value) => e.toggleVisibility(!!value)}
+                    key={e.id}
+                  >
+                    {e.id.charAt(0).toUpperCase()
+                      + e.id.slice(1)}
+                  </DropdownMenuCheckboxItem>)
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <div className="rounded-md border mt-4">
@@ -359,7 +409,7 @@ export default function Tasks() {
         </div>
         <div className="flex justify-between items-center px-4 pt-4">
           <div>
-            {(Object.keys(table.options.state.rowSelection || {}).length)}  of {taskDataTable.length} row(s) selected.
+            {table.getFilteredSelectedRowModel().rows.length}  of {table.getFilteredRowModel().rows.length} row(s) selected.
 
           </div>
           <div className="flex">

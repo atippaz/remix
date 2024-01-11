@@ -3,11 +3,8 @@ import { Button } from "~/components/ui/button"
 import { useLocation, useNavigate } from "@remix-run/react";
 
 import { ToggleGroup, ToggleGroupItem } from "~/components/ui/toggle-group"
+import { MenuRoute } from "~/interface"
 
-interface MenuRoute {
-  label: string
-  value: string
-}
 export default function DefaultLayout({ children }: DefaultLayout) {
   const navigate = useNavigate()
   const location = useLocation()
@@ -19,12 +16,12 @@ export default function DefaultLayout({ children }: DefaultLayout) {
     { label: 'Music', value: '/example/music' },
 
   ]
-  console.log(location.pathname);
-  console.log(menuRoutes);
+  const path = location.pathname.split('/').filter((e, index) => index <= 2)
+  const valueMenu = path.join('/')
 
-  const valueMenu = menuRoutes.some(x => x.value === `${location.pathname}`) ? location.pathname : ""
   function redirectPage(url: string) {
-    if (url == null || url == '') {
+    if (url == null || url == '' || url == '/example') {
+      navigate(menuRoutes[0].value)
       return
     }
     navigate(url)
@@ -32,9 +29,12 @@ export default function DefaultLayout({ children }: DefaultLayout) {
 
 
   useEffect(() => {
-    if (valueMenu == '') {
-      redirectPage(valueMenu)
+    if (valueMenu == '' || valueMenu == '' || valueMenu == '/example') {
+      redirectPage(menuRoutes[0].value)
+      return
     }
+    navigate(valueMenu)
+
   }, [valueMenu])
 
   return (
@@ -60,10 +60,8 @@ export default function DefaultLayout({ children }: DefaultLayout) {
             <ToggleGroup type="single" value={valueMenu}
               size="sm"
               className="flex justify-start"
-              onValueChange={(value) => {
-                redirectPage(value)
-              }}>
-              {menuRoutes.map((e, index) => <ToggleGroupItem className="rounded-full px-3" key={index} value={e.value} >{e.label}</ToggleGroupItem>)}
+            >
+              {menuRoutes.map((e, index) => <ToggleGroupItem onClick={() => redirectPage(e.value)} className="rounded-full px-3" key={index} value={e.value} >{e.label}</ToggleGroupItem>)}
             </ToggleGroup>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import type { MetaFunction } from "@remix-run/node"
 import { Separator } from "~/components/ui/separator"
-import SelectedDropdown from "~/components/ui/selected-dropdown"
+import SelectedDropdown, { DropdownValue, type DropdownGroup } from "~/components/ui/selected-dropdown"
 import {
   Card,
   CardContent,
@@ -22,7 +22,10 @@ export const meta: MetaFunction = () => {
   ];
 };
 import { BarChart, Bar, YAxis, XAxis, ResponsiveContainer, Line } from 'recharts';
-const chartData = [{
+import { Button } from "~/components/ui/button"
+import { ChevronsUpDown } from "lucide-react"
+import { useEffect, useState } from "react"
+let chartData = [{
   name: "Jan",
 }, {
   name: "Feb",
@@ -99,12 +102,60 @@ const recentSalesData = [
     value: '+$39.00'
   }
 ]
+const dataDropdown: DropdownGroup[] = [
+  {
+    groupId: '1',
+    groupLabel: "Personal Account",
+    options: [
+      { label: 'Alicia Koch', value: 'Alicia Koch' },
+    ]
+  },
+  {
+    groupId: '1',
+    groupLabel: "Teams",
+    options: [
+      { label: 'Acme Inc.', value: 'Acme Inc.' },
+      { label: 'Monsters Inc.', value: 'Monsters Inc.' },
+    ]
+  }
+]
+const flatData = {
+  get value(): DropdownValue[] {
+    const state: DropdownValue[] = []
+    dataDropdown.forEach(x => x.options.forEach(m => {
+      state.push({
+        value: m.value,
+        label: m.label
+      })
+    }))
+    return state
+  }
+};
+
+function findValue(value: string) {
+
+  const valueFinder = flatData.value.find(x => x.value.toLowerCase() == value.toLowerCase())
+  return valueFinder == null ? 'Place Select . . .' : valueFinder.label
+}
 export default function Dashboard() {
+  const [open, setOpen] = useState(false)
+  const [valueDropdown, setValueDropdown] = useState(dataDropdown[0].options[0].value)
+  useEffect(() => {
+    chartData = chartData.map(x => { return { name: x.name, data: Math.floor(Math.random() * 3000) + 3000 } })
+  }, [])
   return (
     <div>
-      <Card className="shadow-xl">
+      <Card className="shadow-xl rounded-lg">
         <div className="p-4 flex ">
-          <SelectedDropdown />
+          <SelectedDropdown open={open} value={valueDropdown} onOpen={(e: boolean) => setOpen(e)} OnSelectValue={(e: string) => setValueDropdown(e)} values={dataDropdown} label="team" >
+            <Button
+              variant="outline"
+              aria-expanded={open}
+              className="w-[200px] justify-between"
+            >
+              {findValue(valueDropdown)}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button></SelectedDropdown>
           <div className="flex align-center">
             {subMenu.map(x => (<span className="mx-2" key={x}>{x}</span>))}
           </div>
@@ -138,7 +189,7 @@ export default function Dashboard() {
                 <div>
                   {/* <ResponsiveContainer aspect={1} width="100%" }> */}
 
-                  <BarChart height={400} width={700} id="data" data={chartData.map(x => { return { name: x.name, data: Math.floor(Math.random() * 3000) + 3000 } })}>
+                  <BarChart height={400} width={700} id="data" data={chartData}>
                     <YAxis axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} ></YAxis>
                     <XAxis dataKey="name" axisLine={false} tickLine={false}></XAxis>
                     <Bar id="data" dataKey="data" radius={[4, 4, 0, 0]} fill="#000000" />
