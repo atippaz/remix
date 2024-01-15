@@ -29,12 +29,6 @@ export default function App() {
               <Links />
           </head>
           <body className="">
-              <div className="fixed top-0 px-4 w-full h-[60px] border-b border-gray-800">
-                  <div className="inline-block  align-middle h-full">
-                      align-center
-                  </div>
-              </div>
-              <div className="p-12"></div>
               <Outlet />
               <ScrollRestoration />
               <Scripts />

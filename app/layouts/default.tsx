@@ -9,12 +9,11 @@ export default function DefaultLayout({ children }: DefaultLayout) {
   const navigate = useNavigate()
   const location = useLocation()
   const menuRoutes: MenuRoute[] = [
-    { label: 'Mail', value: '/example/mail' },
-    { label: 'DashBoard', value: '/example/dashboard' },
-    { label: 'Tasks', value: '/example/tasks' },
-    { label: 'Forms', value: '/example/forms' },
-    { label: 'Music', value: '/example/music' },
-
+      { label: 'Mail', value: '/example/mail' },
+      { label: 'Dashboard', value: '/example/dashboard' },
+      { label: 'Tasks', value: '/example/tasks' },
+      { label: 'Forms', value: '/example/forms' },
+      { label: 'Music', value: '/example/music' },
   ]
   const path = location.pathname.split('/').filter((e, index) => index <= 2)
   const valueMenu = path.join('/')

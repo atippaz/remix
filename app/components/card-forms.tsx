@@ -9,18 +9,15 @@ export interface CardFormProps {
 
 export default function CardForms({ children, des, title }: CardFormProps) {
   return (
-    <div className="m-6">
-      <div >
-        <div className="text-lg font-[500]">
-          {title}
-        </div>
-        <div className="">
-          {des}
-        </div>
-      </div>
-      <Separator className="my-6 " />
+      <div className="mx-6">
+          <div>
+              <div className="text-lg font-[500]">{title}</div>
+              <div className="">{des}</div>
+          </div>
+          <Separator className="my-6 " />
 
-      {children}
-    </div >)
+          {children}
+      </div>
+  )
 }
 CardForms.displayName = 'CardForms'

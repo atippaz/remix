@@ -91,7 +91,7 @@ export default function Tasks() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     []
   )
-  const lebels = ["Dot", "Future", "Documentation"]
+  const lebels = ['Bug', 'Feature', 'Documentation']
   const [openDropdown, setOpenDropdown] = useState(false)
   const [pageSizeSelected, setpageSizeSelected] = useState("10")
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
