@@ -12,17 +12,17 @@ export default function Forms() {
       <Form navigate={false} >
         <div>
           <p>Username</p>
-          <Input />
+          <Input defaultValue='' />
           <p>This is your public display name. It can be your real name or a pseudonym. You can only change this once every 30 days.</p>
         </div>
         <div>
           <p>Email</p>
-          <Input />
+          <Input defaultValue='' />
           <p>You can manage verified email addresses in your email settings.</p>
         </div>
         <div>
           <p>Bio</p>
-          <Textarea />
+          <Textarea defaultValue='' />
           <p>You can @mention other users and organizations to link to them.</p>
         </div>
         <div>
@@ -30,7 +30,7 @@ export default function Forms() {
           <p>Add links to your website, blog, or social media profiles.</p>
           <div>
             {urls.map(x => {
-              return (<Input value={x} />)
+              return (<Input defaultValue={x} />)
             })}
           </div>
           <Button variant="ghost" onClick={() => {
