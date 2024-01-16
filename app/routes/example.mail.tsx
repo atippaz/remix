@@ -1,4 +1,6 @@
+import { IceCream } from 'lucide-react'
 import { ReactNode, useState } from 'react'
+import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import {
@@ -9,6 +11,12 @@ import {
 import { ScrollArea, ScrollBar } from '~/components/ui/scroll-area'
 import { Separator } from '~/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '~/components/ui/tooltip'
 const CardBox = ({
     children,
     className,
@@ -42,18 +50,67 @@ export default function Mail() {
     const [valueTabSelect, setValueTabSelect] = useState('all_mail')
     const [selectMail, setSelectMail] = useState<string>('0')
     const Mails: Mail[] = []
+    const [collapse, setCollapse] = useState(false)
+    const menuMail = [
+        { label: 'Inbox', icon: '', count: '128', isDark: true },
+        { label: 'Drafts', icon: '', count: '9', isDark: false },
+        { label: '', icon: '', count: '', isDark: false },
+        { label: '', icon: '', count: '23', isDark: false },
+        { label: '', icon: '', count: '', isDark: false },
+        { label: '', icon: '', count: '', isDark: false },
+    ]
+    const menuMore = [
+        { label: '', icon: '', count: '128', isDark: false },
+        { label: '', icon: '', count: '128', isDark: false },
+    ]
     return (
         <>
             <ResizablePanelGroup
                 direction="horizontal"
                 className="w-full h-full shadow-xl rounded-lg border"
             >
-                <ResizablePanel minSize={5} maxSize={20} defaultSize={20}>
+                <ResizablePanel
+                    onResize={(e) => {
+                        if (e < 12 && !collapse) {
+                            setCollapse(true)
+                        } else if (e >= 12 && collapse) {
+                            setCollapse(false)
+                        }
+                    }}
+                    minSize={6}
+                    maxSize={20}
+                    defaultSize={20}
+                >
                     <CardBox className="">
-                        <span className={`font-semibold ${headerStyle}`}>
+                        <div className={`font-semibold ${headerStyle}`}>
                             One
-                        </span>
-                        <span className="font-semibold">One</span>
+                        </div>
+                        <div className="p-2 w-full h-full">
+                            <TooltipProvider>
+                                <Tooltip delayDuration={50}>
+                                    <TooltipTrigger asChild>
+                                        <Button className="w-full px-2">
+                                            <IceCream className="w-[15px]"></IceCream>
+                                            {!collapse && 'xx'}
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                        <p>Add to library</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                                <Tooltip delayDuration={50}>
+                                    <TooltipTrigger asChild>
+                                        <Button className="w-full px-2">
+                                            <IceCream className="w-[15px]"></IceCream>
+                                            {!collapse && 'xx'}
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Add to library</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </div>
                     </CardBox>
                 </ResizablePanel>
                 <ResizableHandle withHandle />
