@@ -144,97 +144,138 @@ export default function Dashboard() {
     chartData = chartData.map(x => { return { name: x.name, data: Math.floor(Math.random() * 3000) + 3000 } })
   }, [])
   return (
-    <div>
-      <Card className="shadow-xl rounded-lg">
-        <div className="p-4 flex ">
-          <SelectedDropdown open={open} value={valueDropdown} onOpen={(e: boolean) => setOpen(e)} OnSelectValue={(e: string) => setValueDropdown(e)} values={dataDropdown} label="team" >
-            <Button
-              variant="outline"
-              aria-expanded={open}
-              className="w-[200px] justify-between"
-            >
-              {findValue(valueDropdown)}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button></SelectedDropdown>
-          <div className="flex align-center">
-            {subMenu.map(x => (<span className="mx-2" key={x}>{x}</span>))}
-          </div>
-        </div>
-        <Separator className="mb-2" />
-        <div className="p-8">
-          <div>Dashboard</div>
-          <div>
-            <Tabs defaultValue={tabData[0]}>
-              <TabsList >
-                {tabData.map((x, index) => (
-                  <TabsTrigger disabled={index != 0} value={x} key={x}>{x}</TabsTrigger>
-                ))}
+      <div>
+          <Card className="shadow-xl rounded-lg">
+              <div className="p-4 flex gap-4 ">
+                  <SelectedDropdown
+                      open={open}
+                      value={valueDropdown}
+                      onOpen={(e: boolean) => setOpen(e)}
+                      OnSelectValue={(e: string) => setValueDropdown(e)}
+                      values={dataDropdown}
+                      label="team"
+                  >
+                      <Button
+                          variant="outline"
+                          aria-expanded={open}
+                          className="w-[200px] justify-between"
+                      >
+                          {findValue(valueDropdown)}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                  </SelectedDropdown>
+                  <div className="align-middle">
+                      {subMenu.map((x, _) => (
+                          <span
+                              className={`inline-block align-middle mx-2 ${
+                                  _ == 0 || 'text-muted-foreground'
+                              } font-medium hover:text-black`}
+                              key={x}
+                          >
+                              {x}
+                          </span>
+                      ))}
+                  </div>
+              </div>
+              <Separator className="mb-2" />
+              <div className="p-8">
+                  <div>Dashboard</div>
+                  <div>
+                      <Tabs defaultValue={tabData[0]}>
+                          <TabsList>
+                              {tabData.map((x, index) => (
+                                  <TabsTrigger
+                                      disabled={index != 0}
+                                      value={x}
+                                      key={x}
+                                  >
+                                      {x}
+                                  </TabsTrigger>
+                              ))}
+                          </TabsList>
+                      </Tabs>
+                  </div>
+                  <div className="pt-4 grid w-full grid-cols-4 gap-4">
+                      {cardData.map((x) => (
+                          <Card key={x.title}>
+                              <CardHeader>{x.title}</CardHeader>
+                              <CardContent>{x.value}</CardContent>
+                              <CardDescription>{x.des}</CardDescription>
+                          </Card>
+                      ))}
+                  </div>
+                  <div className="pt-4 grid grid-cols-12 gap-4 w-full h[1000px]">
+                      <div className="col-span-7">
+                          <Card className="w-full h-full">
+                              <div>Overview</div>
+                              <div>
+                                  {/* <ResponsiveContainer aspect={1} width="100%" }> */}
 
-              </TabsList>
-            </Tabs >
-          </div>
-          <div className="pt-4 grid w-full grid-cols-4 gap-4">
-            {cardData.map(x => (
-              <Card key={x.title}>
-                <CardHeader>{x.title}</CardHeader>
-                <CardContent>{x.value}</CardContent>
-                <CardDescription>{x.des}</CardDescription>
-              </Card>
-            ))}
-          </div>
-          <div className="pt-4 grid grid-cols-12 gap-4 w-full h[1000px]">
-            <div className="col-span-7">
-              <Card className="w-full h-full">
-                <div>Overview</div>
-                <div>
-                  {/* <ResponsiveContainer aspect={1} width="100%" }> */}
-
-                  <BarChart height={400} width={700} id="data" data={chartData}>
-                    <YAxis axisLine={false} tickLine={false} tickFormatter={(value) => `$${value}`} ></YAxis>
-                    <XAxis dataKey="name" axisLine={false} tickLine={false}></XAxis>
-                    <Bar id="data" dataKey="data" radius={[4, 4, 0, 0]} fill="#000000" />
-                    {/* <Line
+                                  <BarChart
+                                      height={400}
+                                      width={700}
+                                      id="data"
+                                      data={chartData}
+                                  >
+                                      <YAxis
+                                          axisLine={false}
+                                          tickLine={false}
+                                          tickFormatter={(value) => `$${value}`}
+                                      ></YAxis>
+                                      <XAxis
+                                          dataKey="name"
+                                          axisLine={false}
+                                          tickLine={false}
+                                      ></XAxis>
+                                      <Bar
+                                          id="data"
+                                          dataKey="data"
+                                          radius={[4, 4, 0, 0]}
+                                          fill="#000000"
+                                      />
+                                      {/* <Line
                       type="monotone"
                       dataKey="name"
                       stroke="#8884d8"
                       activeDot={{ r: 8 }}
                     /> */}
-                  </BarChart>
-                  {/* </ResponsiveContainer> */}
-                </div>
-              </Card>
-
-            </div>
-            <div className="col-span-5 h-32 w-full h-full">
-              <Card className="w-full h-full">
-                <CardHeader><CardTitle>
-                  Recent Sales
-                </CardTitle><CardDescription>
-                    You made 265 sales this month.</CardDescription></CardHeader>
-                <CardContent >
-                  {recentSalesData.map(e => {
-                    return (<div key={e.name} className="flex justify-between content-center ">
-                      <div>
-                        <div>
-                          {e.name}
-                        </div>
-                        <div>{
-                          e.email
-                        }</div>
+                                  </BarChart>
+                                  {/* </ResponsiveContainer> */}
+                              </div>
+                          </Card>
                       </div>
-                      <div className="font-bold">
-                        {e.value}
+                      <div className="col-span-5 h-32 w-full h-full">
+                          <Card className="w-full h-full">
+                              <CardHeader>
+                                  <CardTitle>Recent Sales</CardTitle>
+                                  <CardDescription>
+                                      You made 265 sales this month.
+                                  </CardDescription>
+                              </CardHeader>
+                              <CardContent>
+                                  {recentSalesData.map((e) => {
+                                      return (
+                                          <div
+                                              key={e.name}
+                                              className="flex justify-between content-center "
+                                          >
+                                              <div>
+                                                  <div>{e.name}</div>
+                                                  <div>{e.email}</div>
+                                              </div>
+                                              <div className="font-bold">
+                                                  {e.value}
+                                              </div>
+                                          </div>
+                                      )
+                                  })}
+                              </CardContent>
+                          </Card>
                       </div>
-                    </div>)
-                  })}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </Card>
-    </div>
-
-  );
+                  </div>
+              </div>
+          </Card>
+      </div>
+  )
 }
 

@@ -20,23 +20,36 @@ export default function Forms() {
   const path = location.pathname.split('/').filter((e, index) => index === 3).join('')
   const menuValue = path === '' ? '/' : `/${path}`
   return (
-    <Card className="rounded-lg shadow-xl">
-      <CardHeader className="mx-4 mt-4">
-        <CardTitle>Settings</CardTitle>
-        <CardDescription>Manage your account settings and set e-mail preferences.</CardDescription>
-      </CardHeader>
-      <Separator className="px-10" />
-      <CardContent className="grid gap-4 grid-cols-12">
-        {path}
-        <ToggleGroup className="block col-span-3" type="single" value={menuValue}
-          size="sm"
-        >
-          {meneRoute.map((e, index) => <ToggleGroupItem onClick={() => navigate(baseRoute + e.value)} className="px-3 flex justify-start w-full" key={index} value={e.value} >{e.label} </ToggleGroupItem>)}
-        </ToggleGroup>
-        <div className="col-span-9">
-          <Outlet></Outlet>
-        </div>
-      </CardContent>
-    </Card>
+      <Card className="rounded-lg shadow-xl px-10">
+          <CardHeader className="mt-4 px-0">
+              <CardTitle>Settings</CardTitle>
+              <CardDescription>
+                  Manage your account settings and set e-mail preferences.
+              </CardDescription>
+          </CardHeader>
+          <Separator className="" />
+          <CardContent className="grid gap-4 grid-cols-12 mt-6 px-0">
+              <ToggleGroup
+                  className="block col-span-3"
+                  type="single"
+                  value={menuValue}
+                  size="sm"
+              >
+                  {meneRoute.map((e, index) => (
+                      <ToggleGroupItem
+                          onClick={() => navigate(baseRoute + e.value)}
+                          className="px-3 flex justify-start w-full"
+                          key={index}
+                          value={e.value}
+                      >
+                          {e.label}{' '}
+                      </ToggleGroupItem>
+                  ))}
+              </ToggleGroup>
+              <div className="col-span-9">
+                  <Outlet></Outlet>
+              </div>
+          </CardContent>
+      </Card>
   )
 }
