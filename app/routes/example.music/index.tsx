@@ -22,23 +22,7 @@ import { useState } from 'react'
 export default function Mail() {
     const [selectTab, setSelectTab] = useState('music')
     const value = '/'
-    const tabData = [
-        {
-            label: 'Music',
-            value: 'music',
-            component: <MusicComponect></MusicComponect>,
-        },
-        {
-            label: 'Podcasts',
-            value: 'podcasts',
-            component: <PodcastComponect></PodcastComponect>,
-        },
-        {
-            label: 'Live',
-            value: '',
-            component: null,
-        },
-    ]
+ 
 
     const menuList = [
         {
@@ -155,6 +139,25 @@ export default function Mail() {
                     icon: <ListMusic className="w-[15px]"></ListMusic>,
                 },
             ],
+        },
+    ]
+    const tabData = [
+        {
+            label: 'Music',
+            value: 'music',
+            component: (
+                <MusicComponect playlist={menuList[2].menus}></MusicComponect>
+            ),
+        },
+        {
+            label: 'Podcasts',
+            value: 'podcasts',
+            component: <PodcastComponect></PodcastComponect>,
+        },
+        {
+            label: 'Live',
+            value: '',
+            component: null,
         },
     ]
     return (

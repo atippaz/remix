@@ -1,7 +1,28 @@
-import { useEffect } from 'react'
+import { PlusCircle } from 'lucide-react'
+import { ReactNode, useEffect } from 'react'
+import {
+    ContextMenu,
+    ContextMenuCheckboxItem,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuLabel,
+    ContextMenuRadioGroup,
+    ContextMenuRadioItem,
+    ContextMenuSeparator,
+    ContextMenuShortcut,
+    ContextMenuSub,
+    ContextMenuSubContent,
+    ContextMenuSubTrigger,
+    ContextMenuTrigger,
+} from '~/components/ui/context-menu'
 import { ScrollArea, ScrollBar } from '~/components/ui/scroll-area'
 import { Separator } from '~/components/ui/separator'
-export default function MusicComponect() {
+interface playlist {
+    label: string
+    value: string
+    icon: ReactNode
+}
+export default function MusicComponect({ playlist }: { playlist: playlist[] }) {
     const suggestionMusic = [
         {
             title: 'React Rendezvous',
@@ -81,13 +102,73 @@ export default function MusicComponect() {
                                             key={index}
                                             className="shrink-0"
                                         >
-                                            <div className="overflow-hidden rounded-md w-[250px]">
-                                                <img
-                                                    src={x.img}
-                                                    alt={`Photo by ${x.title}`}
-                                                    className="h-auto w-auto object-cover transition-all hover:scale-105 aspect-[3/4]"
-                                                />
-                                            </div>
+                                            <ContextMenu>
+                                                <ContextMenuTrigger className="">
+                                                    <div className="overflow-hidden rounded-md w-[250px]">
+                                                        <img
+                                                            src={x.img}
+                                                            alt={`Photo by ${x.title}`}
+                                                            className="h-auto w-auto object-cover transition-all hover:scale-105 aspect-[3/4]"
+                                                        />
+                                                    </div>
+                                                </ContextMenuTrigger>
+                                                <ContextMenuContent className="w-36">
+                                                    <ContextMenuItem>
+                                                        Add To Library
+                                                    </ContextMenuItem>
+                                                    <ContextMenuSub>
+                                                        <ContextMenuSubTrigger>
+                                                            Add To Playlist
+                                                        </ContextMenuSubTrigger>
+                                                        <ContextMenuSubContent className="w-48">
+                                                            <ContextMenuItem className="gap-2">
+                                                                <PlusCircle className="w-[15px]"></PlusCircle>
+                                                                <span>
+                                                                    New Playlist
+                                                                </span>
+                                                            </ContextMenuItem>
+                                                            <ContextMenuSeparator />
+
+                                                            {playlist.map(
+                                                                (x) => {
+                                                                    return (
+                                                                        <ContextMenuItem className="gap-2">
+                                                                            <span>
+                                                                                {
+                                                                                    x.icon
+                                                                                }
+                                                                            </span>
+                                                                            <span>
+                                                                                {
+                                                                                    x.label
+                                                                                }
+                                                                            </span>
+                                                                        </ContextMenuItem>
+                                                                    )
+                                                                }
+                                                            )}
+                                                        </ContextMenuSubContent>
+                                                    </ContextMenuSub>
+                                                    <ContextMenuSeparator />
+                                                    <ContextMenuItem>
+                                                        Play Next
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                        Play Later
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                        Create Station
+                                                    </ContextMenuItem>
+                                                    <ContextMenuSeparator />
+                                                    <ContextMenuItem>
+                                                        Like
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                        Share
+                                                    </ContextMenuItem>
+                                                </ContextMenuContent>
+                                            </ContextMenu>
+
                                             <div className="mt-2 text-sm">
                                                 <h3 className="font-medium leading-none">
                                                     {x.title}
@@ -127,13 +208,72 @@ export default function MusicComponect() {
                                             className="shrink-0"
                                             key={index}
                                         >
-                                            <div className="overflow-hidden rounded-md w-[150px]">
-                                                <img
-                                                    src={x.img}
-                                                    alt={`Photo by ${x.title}`}
-                                                    className="h-auto w-auto object-cover transition-all hover:scale-105 aspect-square"
-                                                />
-                                            </div>
+                                            <ContextMenu>
+                                                <ContextMenuTrigger className="">
+                                                    <div className="overflow-hidden rounded-md w-[150px]">
+                                                        <img
+                                                            src={x.img}
+                                                            alt={`Photo by ${x.title}`}
+                                                            className="h-auto w-auto object-cover transition-all hover:scale-105 aspect-square"
+                                                        />
+                                                    </div>
+                                                </ContextMenuTrigger>
+                                                <ContextMenuContent className="w-36">
+                                                    <ContextMenuItem>
+                                                        Add To Library
+                                                    </ContextMenuItem>
+                                                    <ContextMenuSub>
+                                                        <ContextMenuSubTrigger>
+                                                            Add To Playlist
+                                                        </ContextMenuSubTrigger>
+                                                        <ContextMenuSubContent className="w-48">
+                                                            <ContextMenuItem className="gap-2">
+                                                                <PlusCircle className="w-[15px]"></PlusCircle>
+                                                                <span>
+                                                                    New Playlist
+                                                                </span>
+                                                            </ContextMenuItem>
+                                                            <ContextMenuSeparator />
+
+                                                            {playlist.map(
+                                                                (x) => {
+                                                                    return (
+                                                                        <ContextMenuItem className="gap-2">
+                                                                            <span>
+                                                                                {
+                                                                                    x.icon
+                                                                                }
+                                                                            </span>
+                                                                            <span>
+                                                                                {
+                                                                                    x.label
+                                                                                }
+                                                                            </span>
+                                                                        </ContextMenuItem>
+                                                                    )
+                                                                }
+                                                            )}
+                                                        </ContextMenuSubContent>
+                                                    </ContextMenuSub>
+                                                    <ContextMenuSeparator />
+                                                    <ContextMenuItem>
+                                                        Play Next
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                        Play Later
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                        Create Station
+                                                    </ContextMenuItem>
+                                                    <ContextMenuSeparator />
+                                                    <ContextMenuItem>
+                                                        Like
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                        Share
+                                                    </ContextMenuItem>
+                                                </ContextMenuContent>
+                                            </ContextMenu>
                                             <div className="mt-2 text-sm">
                                                 <h3 className="font-medium leading-none">
                                                     {x.title}

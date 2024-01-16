@@ -38,7 +38,7 @@ export default function DefaultLayout({ children }: DefaultLayout) {
 
   return (
       <div className="w-full h-full py-12 ">
-          <div className="px-64">
+          <div className="px-64 md:px-12">
               <div>
                   <div>
                       <div className="text-center">
