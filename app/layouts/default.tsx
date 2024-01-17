@@ -38,18 +38,18 @@ export default function DefaultLayout({ children }: DefaultLayout) {
 
   return (
       <div className="w-full h-full py-12 ">
-          <div className="lg:px-64 md:px-12">
+          <div className="2xl:px-64 lg:px-12">
               <div>
                   <div>
                       <div className="text-center">
-                          <p className="text-center text-3xl font-bold ">
+                          <h1 className="text-center text-3xl font-bold leading-tight tracking-tighter md:text-6xl lg:leading-[1.1] hidden md:block">
                               Check out some examples
-                          </p>
-                          <p className="text-center text-lg text-muted-foreground">
+                          </h1>
+                          <span className="w-[200px] text-center text-lg text-muted-foreground sm:text-xl">
                               Dashboard, cards, authentication. Some examples
                               built using the components. Use this as a guide to
                               build your own.
-                          </p>
+                          </span>
                       </div>
                       <div className="w-full h-full py-4">
                           <div className=" flex gap-4 justify-center">
@@ -58,7 +58,7 @@ export default function DefaultLayout({ children }: DefaultLayout) {
                           </div>
                       </div>
                   </div>
-                  <div>
+                  <div className="mt-20">
                       <ToggleGroup
                           type="single"
                           value={valueMenu}

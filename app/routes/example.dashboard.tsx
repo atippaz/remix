@@ -164,7 +164,7 @@ export default function Dashboard() {
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                   </SelectedDropdown>
-                  <div className="align-middle">
+                  <div className="flex items-center">
                       {subMenu.map((x, _) => (
                           <span
                               className={`inline-block align-middle mx-2 ${

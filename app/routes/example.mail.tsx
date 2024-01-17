@@ -1,11 +1,18 @@
+import { CaretSortIcon } from '@radix-ui/react-icons'
 import {
     Archive,
     ArchiveX,
+    CheckIcon,
+    Clock,
     File,
+    Forward,
     IceCream,
     Inbox,
     Info,
     MessageSquare,
+    MoreVertical,
+    Reply,
+    ReplyAll,
     Send,
     ShoppingCart,
     Trash2,
@@ -14,7 +21,20 @@ import {
 import { ReactNode, useEffect, useState } from 'react'
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+} from '~/components/ui/command'
 import { Input } from '~/components/ui/input'
+import { Label } from '~/components/ui/label'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from '~/components/ui/popover'
 import {
     ResizableHandle,
     ResizablePanel,
@@ -22,7 +42,9 @@ import {
 } from '~/components/ui/resizable'
 import { ScrollArea, ScrollBar } from '~/components/ui/scroll-area'
 import { Separator } from '~/components/ui/separator'
+import { Switch } from '~/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
+import { Textarea } from '~/components/ui/textarea'
 import { ToggleGroup, ToggleGroupItem } from '~/components/ui/toggle-group'
 import {
     Tooltip,
@@ -30,6 +52,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '~/components/ui/tooltip'
+import { cn } from '~/lib/utils'
 const CardBox = ({
     children,
     className,
@@ -41,7 +64,7 @@ const CardBox = ({
         <div className={className}>
             <div className="flex items-center p-2 ">{children[0]}</div>
             <Separator></Separator>
-            <div>{children[1]}</div>
+            {children[1]}
         </div>
     )
 }
@@ -59,14 +82,139 @@ interface Mail {
     sendTime: Date
     email: string
 }
-function SelectMail({ item }: { item: Mail }) {
+function SelectMail({ item }: { item?: Mail }) {
     return (
-        <span className="font-semibold">
-            <div>{item?.mailId}</div>
-            <Separator></Separator>
-            <div>{item?.content}</div>
-            {`${item?.isRead}`}
-        </span>
+        <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col">
+                <div className="p-4 flex gap-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                        {item?.formUser
+                            .split(' ')
+                            .map((x) => x[0].toLocaleUpperCase())}
+                    </div>
+                    <div className="grid gap-1">
+                        <div className="font-semibold">{item?.formUser}</div>
+                        <div className="line-clamp-1 text-xs">
+                            {item?.title}
+                        </div>
+                        <div className="line-clamp-1 text-xs">
+                            <span className="font-medium">Reply-To:&nbsp;</span>
+                            {item?.email}
+                        </div>
+                    </div>
+                    <div className="ml-auto text-xs text-muted-foreground">
+                        {item?.sendTime.toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            second: 'numeric',
+                            hour12: true,
+                        })}
+                    </div>
+                </div>
+                <div className="flex-1 whitespace-pre-wrap  border-y p-4 text-sm">
+                    {item?.content}
+                </div>
+            </div>
+            <div className=" p-4">
+                <div>
+                    <Textarea placeholder={`Reply ${item?.formUser} ...`} />
+                </div>
+                <div className="flex justify-between mt-4">
+                    <Label className=" font-normal  flex items-center gap-2 text-xs">
+                        <Switch></Switch> Mute this thread
+                    </Label>
+                    <div>
+                        <Button size="sm">Send</Button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+function HeaderMailReading() {
+    return (
+        <div className="w-full flex justify-between">
+            <div className="flex">
+                <TooltipProvider delayDuration={50}>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button variant="ghost">
+                                <Archive className="w-[15px]"></Archive>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Archive</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button variant="ghost">
+                                <ArchiveX className="w-[15px]"></ArchiveX>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Move to Junk</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button variant="ghost">
+                                <Trash2 className="w-[15px]"></Trash2>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Move to Trash</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                <div className="my-1">
+                    <Separator orientation="vertical"></Separator>
+                </div>
+
+                <TooltipProvider delayDuration={50}>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button variant="ghost">
+                                <Clock className="w-[15px]"></Clock>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Snooze</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
+            <div className="flex">
+                <TooltipProvider delayDuration={50}>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button variant="ghost">
+                                <Reply className="w-[15px]"></Reply>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Reply</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button variant="ghost">
+                                <ReplyAll className="w-[15px]"></ReplyAll>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Reply All</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button variant="ghost">
+                                <Forward className="w-[15px]"></Forward>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Forward</TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+                <div className="my-1">
+                    <Separator orientation="vertical"></Separator>
+                </div>
+
+                <Button variant="ghost">
+                    <MoreVertical className="w-[15px]"></MoreVertical>
+                </Button>
+            </div>
+        </div>
     )
 }
 export default function Mail() {
@@ -129,9 +277,18 @@ export default function Mail() {
             userName: 'Bob Johnson',
             email: 'bobjohnson@example.com',
         },
+        {
+            userName: 'Gygle Monthy',
+            email: 'gyglemonthy@example.com',
+        },
+        {
+            userName: 'Octomon Hontly',
+            email: 'octomonhontly@example.com',
+        },
     ]
     const topics = [
         `Meeting Tomorrow`,
+        `To: Tosto`,
         `Re: Project Update`,
         `New Project Idea`,
         `Vacation Plans`,
@@ -214,7 +371,24 @@ export default function Mail() {
             isDark: false,
         },
     ]
+    function generateRandomDate(from: Date, to: Date) {
+        return new Date(
+            from.getTime() + Math.random() * (to.getTime() - from.getTime())
+        )
+    }
 
+    function getDateDiff(date: Date) {
+        const dateNow = new Date()
+        const diffTime = Math.abs(dateNow.getTime() - date.getTime())
+        const diffDays = Math.round(diffTime / (1000 * 3600 * 24))
+        return `${
+            diffDays >= 365
+                ? Math.floor(diffDays / 365) + ' Year'
+                : diffDays >= 30
+                  ? Math.floor(diffDays / 30) + ' Month'
+                  : diffDays + ' Day'
+        } ago`
+    }
     useEffect(() => {
         let i = 0
         while (i <= 30) {
@@ -230,8 +404,11 @@ export default function Mail() {
                 title: topic,
                 content: paragraph,
                 formUser: user.userName,
-                isRead: randomIndex > 0.08,
-                sendTime: new Date(),
+                isRead: randomIndex > 0.6,
+                sendTime: generateRandomDate(
+                    new Date(2023 + Math.floor(randomIndex), 0, 1),
+                    new Date()
+                ),
                 tag: [],
                 email: user.email,
             }
@@ -239,7 +416,13 @@ export default function Mail() {
             i++
         }
     }, [])
-
+    const [open, setOpen] = useState(false)
+    const [value, setValue] = useState('alicia@example.com')
+    const mailList = [
+        { icon: 'a', label: 'Alicia Koch', value: 'alicia@example.com' },
+        { icon: 'b', label: 'Alicia Koch', value: 'alicia@gmail.com' },
+        { icon: 'c', label: 'Alicia Koch', value: 'alicia@me.com' },
+    ]
     return (
         <>
             <ResizablePanelGroup
@@ -258,16 +441,64 @@ export default function Mail() {
                     maxSize={20}
                     defaultSize={20}
                 >
-                    <CardBox className="">
-                        <div className={`font-semibold ${headerStyle}`}>
-                            One
-                        </div>
+                    <CardBox className="h-full">
+                        <Popover open={open} onOpenChange={setOpen}>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={open}
+                                    className="w-[200px] justify-between"
+                                >
+                                    {value
+                                        ? mailList.find(
+                                              (mail) => mail.value === value
+                                          )?.label
+                                        : 'Select Mail'}
+                                    <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[200px] p-0">
+                                <Command>
+                                    <CommandGroup>
+                                        {mailList.map((mail, index) => (
+                                            <CommandItem
+                                                key={index}
+                                                value={mail.value}
+                                                onSelect={(currentValue) => {
+                                                    setValue(
+                                                        currentValue === value
+                                                            ? ''
+                                                            : currentValue
+                                                    )
+                                                    setOpen(false)
+                                                }}
+                                            >
+                                                {mail.value}
+                                                <CheckIcon
+                                                    className={cn(
+                                                        'ml-auto h-4 w-4',
+                                                        value === mail.value
+                                                            ? 'opacity-100'
+                                                            : 'opacity-0'
+                                                    )}
+                                                />
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+
                         <div className=" w-full h-full">
                             <div className="p-3 ">
                                 <TooltipProvider>
-                                    {menuMail.map((x) => {
+                                    {menuMail.map((x, index) => {
                                         return (
-                                            <Tooltip delayDuration={50}>
+                                            <Tooltip
+                                                key={index}
+                                                delayDuration={50}
+                                            >
                                                 <TooltipTrigger
                                                     asChild
                                                     className="px-2"
@@ -307,9 +538,12 @@ export default function Mail() {
                             <Separator></Separator>
                             <div className="p-3">
                                 <TooltipProvider>
-                                    {menuMore.map((x) => {
+                                    {menuMore.map((x, index) => {
                                         return (
-                                            <Tooltip delayDuration={50}>
+                                            <Tooltip
+                                                key={index}
+                                                delayDuration={50}
+                                            >
                                                 <TooltipTrigger asChild>
                                                     <Button
                                                         className="w-full px-2  flex items-start justify-between"
@@ -348,11 +582,11 @@ export default function Mail() {
                 <ResizableHandle withHandle />
 
                 <ResizablePanel minSize={30} defaultSize={35}>
-                    <CardBox>
+                    <CardBox className="h-full">
                         <div
                             className={`flex justify-between w-full ${headerStyle}`}
                         >
-                            <div>
+                            <div className="flex items-center">
                                 <h1 className="text-xl font-bold">Inbox</h1>
                             </div>
                             <div className="h-full flex items-center">
@@ -374,7 +608,7 @@ export default function Mail() {
                                 </Tabs>
                             </div>
                         </div>
-                        <div className="p-4 block">
+                        <div className="px-4 pt-4 block">
                             <Input placeholder="search"></Input>
                             <ScrollArea className="h-[700px] mt-4">
                                 <ToggleGroup
@@ -384,18 +618,63 @@ export default function Mail() {
                                     className="block"
                                 >
                                     {mails
-                                        .filter((x) => isAllMail || !x.isRead)
-                                        .map((x) => {
+                                        .filter(
+                                            (x) =>
+                                                isAllMail ||
+                                                (!isAllMail && !x.isRead)
+                                        )
+                                        .map((x, index) => {
                                             return (
                                                 <ToggleGroupItem
                                                     onClick={() =>
                                                         setSelectMail(x.mailId)
                                                     }
-                                                    className="w-full mb-2 rounded-sm border"
-                                                    key={x.mailId}
+                                                    className="w-full h-full p-0 mb-2"
+                                                    key={index}
                                                     value={x.mailId}
                                                 >
-                                                    {x.title}
+                                                    <div className="flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent">
+                                                        <div className="w-full flex items-center justify-between">
+                                                            <div className="font-semibold flex text-center">
+                                                                <div>
+                                                                    {x.formUser}
+                                                                </div>
+                                                                <div className="flex items-center">
+                                                                    {!x.isRead && (
+                                                                        <span className="flex h-2 w-2 rounded-full bg-blue-600 ml-2 mt-1"></span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                            <div className=" text-xs text-muted-foreground">
+                                                                {getDateDiff(
+                                                                    x.sendTime
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-start text-xs font-medium">
+                                                            {x.title}
+                                                        </div>
+                                                        <div className="w-full text-start line-clamp-2 text-xs text-muted-foreground">
+                                                            {x.content}
+                                                        </div>
+                                                        <div>
+                                                            {x.tag.map(
+                                                                (m, index) => {
+                                                                    return (
+                                                                        <div
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                m.label
+                                                                            }
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 </ToggleGroupItem>
                                             )
                                         })}
@@ -409,10 +688,8 @@ export default function Mail() {
                 <ResizableHandle withHandle />
 
                 <ResizablePanel minSize={10} defaultSize={45}>
-                    <CardBox>
-                        <span className={`font-semibold ${headerStyle}`}>
-                            <h1 className="text-xl font-bold">Inbox</h1>
-                        </span>
+                    <CardBox className="flex flex-col h-full">
+                        <HeaderMailReading></HeaderMailReading>
                         <SelectMail
                             item={mails.find((x) => x.mailId == selectMail)!}
                         ></SelectMail>
