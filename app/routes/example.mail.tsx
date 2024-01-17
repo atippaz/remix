@@ -13,6 +13,7 @@ import {
     MoreVertical,
     Reply,
     ReplyAll,
+    SearchIcon,
     Send,
     ShoppingCart,
     Trash2,
@@ -609,7 +610,18 @@ export default function Mail() {
                             </div>
                         </div>
                         <div className="px-4 pt-4 block">
-                            <Input placeholder="search"></Input>
+                            <div
+                                className={cn(
+                                    'flex h-10 items-center rounded-md border border-input bg-white pl-3 text-sm ring-offset-background focus-within:ring-1 focus-within:ring-ring focus-within:ring-offset-0'
+                                )}
+                            >
+                                <SearchIcon className="h-[16px] w-[16px]  text-muted-foreground" />
+                                <input
+                                    type="search"
+                                    placeholder="Search"
+                                    className="w-full p-2 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                />
+                            </div>
                             <ScrollArea className="h-[700px] mt-4">
                                 <ToggleGroup
                                     type="single"
