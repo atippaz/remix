@@ -309,192 +309,251 @@ export default function Tasks() {
     })
   }]
   return (
-    <Card className="p-2">
-      <CardHeader>
-        <CardTitle>
-          <p className="text-2xl font-bold tracking-tight">
-            Welcome back!
-          </p>
-        </CardTitle>
-        <CardDescription>
-          <p className="text-muted-foreground font-[600]">
-
-            {"Here's a list of your tasks for this month!"}
-          </p>
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex justify-between">
-          <div className="flex gap-2">
-            <Input placeholder="Filter tasks..." value={(table.getColumn("title")?.getFilterValue() as string) ?? ""} onChange={(event) =>
-              table.getColumn("title")?.setFilterValue(event.target.value)
-            }></Input>
-            <SelectedDropdown open={openStatus} value={statusFilterValue} onOpen={(e: boolean) => setOpenStatus(e)} OnSelectValue={(e: string) => { setStatusFilterValue(e); table.getColumn("status")?.setFilterValue(statusFilterValue) }} values={dataStatusDropdown} label="team" >
-              <Button className="border-dashed" variant="outline">Status</Button>
-            </SelectedDropdown>
-            <Button className="border-dashed" variant="outline">Priority</Button>
-          </div>
-          <div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">view</Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {table.getAllColumns().filter((column) => column.getCanHide()).map(e => {
-                  return (<DropdownMenuCheckboxItem
-                    checked={e.getIsVisible()}
-                    onCheckedChange={(value) => e.toggleVisibility(!!value)}
-                    key={e.id}
-                  >
-                    {e.id.charAt(0).toUpperCase()
-                      + e.id.slice(1)}
-                  </DropdownMenuCheckboxItem>)
-                })}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-        <div className="rounded-md border mt-4">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                      </TableHead>
-                    )
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-
-        </div>
-        <div className="flex justify-between items-center px-4 pt-4">
-          <div>
-            {table.getFilteredSelectedRowModel().rows.length}  of {table.getFilteredRowModel().rows.length} row(s) selected.
-
-          </div>
-          <div className="flex">
-            <div>
-              Rows per page<Popover open={openDropdown} onOpenChange={setOpenDropdown}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={openDropdown}
-                    className="w-[200px] justify-between"
-                  >
-                    {pageSizeSelected
-                      ? pageSize.find((page) => page.value === pageSizeSelected)?.label
-                      : pageSize[0].value}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandGroup>
-                      {pageSize.map((page) => (
-                        <CommandItem
-                          key={page.value}
-                          value={page.value}
-                          onSelect={(currentValue) => {
-                            setpageSizeSelected(currentValue === pageSizeSelected ? "" : currentValue)
-                            setOpenDropdown(false)
-                            table.setPageSize(parseInt(currentValue))
+      <Card className="p-2">
+          <CardHeader>
+              <CardTitle>
+                  <p className="text-2xl font-bold tracking-tight">
+                      Welcome back!
+                  </p>
+              </CardTitle>
+              <CardDescription>
+                  <p className="text-muted-foreground font-[600]">
+                      {"Here's a list of your tasks for this month!"}
+                  </p>
+              </CardDescription>
+          </CardHeader>
+          <CardContent>
+              <div className="flex justify-between">
+                  <div className="flex gap-2">
+                      <Input
+                          placeholder="Filter tasks..."
+                          value={
+                              (table
+                                  .getColumn('title')
+                                  ?.getFilterValue() as string) ?? ''
+                          }
+                          onChange={(event) =>
+                              table
+                                  .getColumn('title')
+                                  ?.setFilterValue(event.target.value)
+                          }
+                      ></Input>
+                      <SelectedDropdown
+                          open={openStatus}
+                          value={statusFilterValue}
+                          onOpen={(e: boolean) => setOpenStatus(e)}
+                          OnSelectValue={(e: string) => {
+                              setStatusFilterValue(e)
+                              table
+                                  .getColumn('status')
+                                  ?.setFilterValue(statusFilterValue)
                           }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              pageSizeSelected === page.value ? "opacity-100" : "opacity-0"
-                            )}
-                          />
-                          {page.label}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              Page {(table.options.state.pagination?.pageIndex || 0) + 1}  of {table.getPageCount()}
-            </div>
-            <div className="flex items-center justify-end gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.setPageIndex(0)}
-                disabled={!table.getCanPreviousPage()}
-              >
-                {'<<'}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                {'<'}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                {'>'}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                disabled={!table.getCanNextPage()}
-              >
-                {'>>'}
-              </Button>
-            </div>
-          </div>
-
-
-        </div>
-      </CardContent>
-    </Card >
-  );
+                          values={dataStatusDropdown}
+                          label="team"
+                      >
+                          <Button className="border-dashed" variant="outline">
+                              Status
+                          </Button>
+                      </SelectedDropdown>
+                      <Button className="border-dashed" variant="outline">
+                          Priority
+                      </Button>
+                  </div>
+                  <div>
+                      <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                              <Button variant="outline">view</Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="w-56">
+                              <DropdownMenuLabel>
+                                  Toggle columns
+                              </DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              {table
+                                  .getAllColumns()
+                                  .filter((column) => column.getCanHide())
+                                  .map((e, index) => {
+                                      return (
+                                          <DropdownMenuCheckboxItem
+                                              checked={e.getIsVisible()}
+                                              onCheckedChange={(value) =>
+                                                  e.toggleVisibility(!!value)
+                                              }
+                                              key={index}
+                                          >
+                                              {e.id.charAt(0).toUpperCase() +
+                                                  e.id.slice(1)}
+                                          </DropdownMenuCheckboxItem>
+                                      )
+                                  })}
+                          </DropdownMenuContent>
+                      </DropdownMenu>
+                  </div>
+              </div>
+              <div className="rounded-md border mt-4">
+                  <Table>
+                      <TableHeader>
+                          {table.getHeaderGroups().map((headerGroup, index) => (
+                              <TableRow key={index}>
+                                  {headerGroup.headers.map((header, index) => {
+                                      return (
+                                          <TableHead key={index}>
+                                              {header.isPlaceholder
+                                                  ? null
+                                                  : flexRender(
+                                                        header.column.columnDef
+                                                            .header,
+                                                        header.getContext()
+                                                    )}
+                                          </TableHead>
+                                      )
+                                  })}
+                              </TableRow>
+                          ))}
+                      </TableHeader>
+                      <TableBody>
+                          {table.getRowModel().rows?.length ? (
+                              table.getRowModel().rows.map((row, index) => (
+                                  <TableRow
+                                      key={index}
+                                      data-state={
+                                          row.getIsSelected() && 'selected'
+                                      }
+                                  >
+                                      {row
+                                          .getVisibleCells()
+                                          .map((cell, index) => (
+                                              <TableCell key={index}>
+                                                  {flexRender(
+                                                      cell.column.columnDef
+                                                          .cell,
+                                                      cell.getContext()
+                                                  )}
+                                              </TableCell>
+                                          ))}
+                                  </TableRow>
+                              ))
+                          ) : (
+                              <TableRow>
+                                  <TableCell
+                                      colSpan={columns.length}
+                                      className="h-24 text-center"
+                                  >
+                                      No results.
+                                  </TableCell>
+                              </TableRow>
+                          )}
+                      </TableBody>
+                  </Table>
+              </div>
+              <div className="flex justify-between items-center px-4 pt-4">
+                  <div>
+                      {table.getFilteredSelectedRowModel().rows.length} of{' '}
+                      {table.getFilteredRowModel().rows.length} row(s) selected.
+                  </div>
+                  <div className="flex">
+                      <div>
+                          Rows per page
+                          <Popover
+                              open={openDropdown}
+                              onOpenChange={setOpenDropdown}
+                          >
+                              <PopoverTrigger asChild>
+                                  <Button
+                                      variant="outline"
+                                      role="combobox"
+                                      aria-expanded={openDropdown}
+                                      className="w-[200px] justify-between"
+                                  >
+                                      {pageSizeSelected
+                                          ? pageSize.find(
+                                                (page) =>
+                                                    page.value ===
+                                                    pageSizeSelected
+                                            )?.label
+                                          : pageSize[0].value}
+                                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                  </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-[200px] p-0">
+                                  <Command>
+                                      <CommandGroup>
+                                          {pageSize.map((page, index) => (
+                                              <CommandItem
+                                                  key={index}
+                                                  value={page.value}
+                                                  onSelect={(currentValue) => {
+                                                      setpageSizeSelected(
+                                                          currentValue ===
+                                                              pageSizeSelected
+                                                              ? ''
+                                                              : currentValue
+                                                      )
+                                                      setOpenDropdown(false)
+                                                      table.setPageSize(
+                                                          parseInt(currentValue)
+                                                      )
+                                                  }}
+                                              >
+                                                  <Check
+                                                      className={cn(
+                                                          'mr-2 h-4 w-4',
+                                                          pageSizeSelected ===
+                                                              page.value
+                                                              ? 'opacity-100'
+                                                              : 'opacity-0'
+                                                      )}
+                                                  />
+                                                  {page.label}
+                                              </CommandItem>
+                                          ))}
+                                      </CommandGroup>
+                                  </Command>
+                              </PopoverContent>
+                          </Popover>
+                          Page{' '}
+                          {(table.options.state.pagination?.pageIndex || 0) + 1}{' '}
+                          of {table.getPageCount()}
+                      </div>
+                      <div className="flex items-center justify-end gap-2">
+                          <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => table.setPageIndex(0)}
+                              disabled={!table.getCanPreviousPage()}
+                          >
+                              {'<<'}
+                          </Button>
+                          <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => table.previousPage()}
+                              disabled={!table.getCanPreviousPage()}
+                          >
+                              {'<'}
+                          </Button>
+                          <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => table.nextPage()}
+                              disabled={!table.getCanNextPage()}
+                          >
+                              {'>'}
+                          </Button>
+                          <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                  table.setPageIndex(table.getPageCount() - 1)
+                              }
+                              disabled={!table.getCanNextPage()}
+                          >
+                              {'>>'}
+                          </Button>
+                      </div>
+                  </div>
+              </div>
+          </CardContent>
+      </Card>
+  )
 }

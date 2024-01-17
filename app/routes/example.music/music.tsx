@@ -130,9 +130,14 @@ export default function MusicComponect({ playlist }: { playlist: playlist[] }) {
                                                             <ContextMenuSeparator />
 
                                                             {playlist.map(
-                                                                (x) => {
+                                                                (x, index) => {
                                                                     return (
-                                                                        <ContextMenuItem className="gap-2">
+                                                                        <ContextMenuItem
+                                                                            key={
+                                                                                index
+                                                                            }
+                                                                            className="gap-2"
+                                                                        >
                                                                             <span>
                                                                                 {
                                                                                     x.icon
@@ -236,9 +241,9 @@ export default function MusicComponect({ playlist }: { playlist: playlist[] }) {
                                                             <ContextMenuSeparator />
 
                                                             {playlist.map(
-                                                                (x) => {
+                                                                (x,index) => {
                                                                     return (
-                                                                        <ContextMenuItem className="gap-2">
+                                                                        <ContextMenuItem key={index} className="gap-2">
                                                                             <span>
                                                                                 {
                                                                                     x.icon
