@@ -20,6 +20,7 @@ import {
     User2,
 } from 'lucide-react'
 import { ReactNode, useEffect, useState } from 'react'
+import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
 import { Card } from '~/components/ui/card'
 import {
@@ -71,7 +72,7 @@ const CardBox = ({
 }
 interface Tag {
     label: string
-    style: 'outline' | 'dark' | 'normal'
+    style: 'default' | 'secondary' | 'destructive' | 'outline'
 }
 interface Mail {
     mailId: string
@@ -296,6 +297,12 @@ export default function Mail() {
         `Re: Conference Registration`,
         `Re: Question about Budget`,
     ]
+    const tags: Tag[] = [
+        { label: 'work', style: 'default' },
+        { label: 'personal', style: 'outline' },
+        { label: 'meeting', style: 'secondary' },
+        { label: 'important', style: 'secondary' },
+    ]
     const headerStyle = 'h-[35px]'
     const iconStyle = 'h-[15px] flex justify-center'
     const [isAllMail, setIsAllMail] = useState(true)
@@ -399,6 +406,16 @@ export default function Mail() {
             const user = users[randomIndex]
             randomIndex = Math.floor(Math.random() * paragraphs.length)
             const paragraph = paragraphs[randomIndex]
+            const tagCount = Math.floor(Math.random() * (tags.length - 1)) + 1
+            let tagSelect = 0
+            const tag: Tag[] = []
+            while (tagSelect < tagCount) {
+                randomIndex = Math.floor(Math.random() * tags.length)
+                if (!tag.some((x) => x == tags[randomIndex])) {
+                    tag.push(tags[randomIndex])
+                }
+                tagSelect++
+            }
             randomIndex = Math.random()
             const mailObj = {
                 mailId: `${i}`,
@@ -410,7 +427,7 @@ export default function Mail() {
                     new Date(2023 + Math.floor(randomIndex), 0, 1),
                     new Date()
                 ),
-                tag: [],
+                tag: tag,
                 email: user.email,
             }
             setMails((prev) => [...prev, mailObj])
@@ -669,7 +686,7 @@ export default function Mail() {
                                                         <div className="w-full text-start line-clamp-2 text-xs text-muted-foreground">
                                                             {x.content}
                                                         </div>
-                                                        <div>
+                                                        <div className="flex gap-2">
                                                             {x.tag.map(
                                                                 (m, index) => {
                                                                     return (
@@ -678,9 +695,16 @@ export default function Mail() {
                                                                                 index
                                                                             }
                                                                         >
-                                                                            {
-                                                                                m.label
-                                                                            }
+                                                                            <Badge
+                                                                                variant={
+                                                                                    m.style
+                                                                                }
+                                                                                className="w-fit h-fit"
+                                                                            >
+                                                                                {
+                                                                                    m.label
+                                                                                }
+                                                                            </Badge>
                                                                         </div>
                                                                     )
                                                                 }
