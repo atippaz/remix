@@ -22,7 +22,12 @@ import {
 import { ReactNode, useEffect, useState } from 'react'
 import { Badge } from '~/components/ui/badge'
 import { Button } from '~/components/ui/button'
-import { Card } from '~/components/ui/card'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardTitle,
+} from '~/components/ui/card'
 import {
     Command,
     CommandEmpty,
@@ -137,6 +142,7 @@ function SelectMail({ item }: { item?: Mail }) {
     )
 }
 function HeaderMailReading() {
+    const [openDateTime, setOpenDateTime] = useState(false)
     return (
         <div className="w-full flex justify-between">
             <div className="flex">
@@ -173,11 +179,19 @@ function HeaderMailReading() {
                 <TooltipProvider delayDuration={50}>
                     <Tooltip>
                         <TooltipTrigger>
-                            <Button variant="ghost">
-                                <Clock className="w-[15px]"></Clock>
-                            </Button>
+                            <DatePicker
+                                callback={() =>
+                                    setOpenDateTime((prev) => !prev)
+                                }
+                            >
+                                <Button variant="ghost">
+                                    <Clock className="w-[15px]"></Clock>
+                                </Button>
+                            </DatePicker>
                         </TooltipTrigger>
-                        <TooltipContent>Snooze</TooltipContent>
+                        {!openDateTime && (
+                            <TooltipContent>Snooze</TooltipContent>
+                        )}
                     </Tooltip>
                 </TooltipProvider>
             </div>
@@ -211,10 +225,30 @@ function HeaderMailReading() {
                 <div className="my-1">
                     <Separator orientation="vertical"></Separator>
                 </div>
-
-                <Button variant="ghost">
-                    <MoreVertical className="w-[15px]"></MoreVertical>
-                </Button>
+                <Popover>
+                    <PopoverTrigger>
+                        <Button variant="ghost">
+                            <MoreVertical className="w-[15px]"></MoreVertical>
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                        side="bottom"
+                        className="w-fit flex flex-col p-1 mr-12"
+                    >
+                        <Button variant="ghost" className="flex justify-start">
+                            Mark as Read
+                        </Button>
+                        <Button variant="ghost" className="flex justify-start">
+                            Star Thread
+                        </Button>
+                        <Button variant="ghost" className="flex justify-start">
+                            Add label
+                        </Button>
+                        <Button variant="ghost" className="flex justify-start">
+                            Mute thread
+                        </Button>
+                    </PopoverContent>
+                </Popover>
             </div>
         </div>
     )
@@ -437,9 +471,74 @@ export default function Mail() {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState('alicia@example.com')
     const mailList = [
-        { icon: 'a', label: 'Alicia Koch', value: 'alicia@example.com' },
-        { icon: 'b', label: 'Alicia Koch', value: 'alicia@gmail.com' },
-        { icon: 'c', label: 'Alicia Koch', value: 'alicia@me.com' },
+        {
+            icon: (
+                <svg
+                    className="with-icon_icon__MHUeb"
+                    data-testid="geist-icon"
+                    fill="none"
+                    height="24"
+                    shape-rendering="geometricPrecision"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    viewBox="0 0 24 24"
+                    width="15"
+                    style={{
+                        color: 'var(--geist-foreground)',
+                        width: '18px',
+                        height: '18px',
+                    }}
+                >
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M12 2L2 19.7778H22L12 2Z"
+                        fill="currentColor"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                    />
+                </svg>
+            ),
+            label: 'Alicia Koch',
+            value: 'alicia@example.com',
+        },
+        {
+            icon: (
+                <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 134 102"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M111.5 3.8L103 10.1L66.7 37.4L30.3 10.1L21.8 3.7C12.8 -3 0 3.4 0 14.7V26.8V92C0 97 4.1 101.1 9.1 101.1H30.3V49.5L66.7 76.8L103 49.5V101H124.2C129.2 101 133.3 96.9 133.3 91.9V26.8V14.7C133.3 3.4 120.5 -3 111.5 3.8Z"
+                        fill="black"
+                    />
+                </svg>
+            ),
+            label: 'Alicia Koch',
+            value: 'alicia@gmail.com',
+        },
+        {
+            icon: (
+                <svg
+                    fill="#1A1A1A"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 50 50"
+                    width="18px"
+                    height="18px"
+                >
+                    <path d="M40.998,23.261C40.87,16.479,35.313,11,28.5,11c-4.142,0-7.916,1.993-10.255,5.373C17.522,16.125,16.77,16,16,16	c-3.293,0-6.117,2.306-6.825,5.463C5.508,22.67,3,26.092,3,30c0,4.963,4.038,9,9,9h27c4.411,0,8-3.589,8-8	C47,27.339,44.476,24.158,40.998,23.261z" />
+                </svg>
+            ),
+            label: 'Alicia Koch',
+            value: 'alicia@me.com',
+        },
     ]
     return (
         <>
@@ -466,17 +565,33 @@ export default function Mail() {
                                     variant="outline"
                                     role="combobox"
                                     aria-expanded={open}
-                                    className="w-[200px] justify-between"
+                                    className="w-full justify-between"
                                 >
-                                    {value
-                                        ? mailList.find(
-                                              (mail) => mail.value === value
-                                          )?.label
-                                        : 'Select Mail'}
+                                    <div className="flex justify-start gap-2">
+                                        {value ? (
+                                            <>
+                                                {
+                                                    mailList.find(
+                                                        (mail) =>
+                                                            mail.value === value
+                                                    )?.icon
+                                                }
+
+                                                {
+                                                    mailList.find(
+                                                        (mail) =>
+                                                            mail.value === value
+                                                    )?.label
+                                                }
+                                            </>
+                                        ) : (
+                                            'Select Mail'
+                                        )}
+                                    </div>
                                     <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[200px] p-0">
+                            <PopoverContent className="w-[300px] ml-10 p-0">
                                 <Command>
                                     <CommandGroup>
                                         {mailList.map((mail, index) => (
@@ -492,7 +607,10 @@ export default function Mail() {
                                                     setOpen(false)
                                                 }}
                                             >
-                                                {mail.value}
+                                                <div className="flex justify-start gap-2">
+                                                    {mail.icon}
+                                                    {mail.value}
+                                                </div>
                                                 <CheckIcon
                                                     className={cn(
                                                         'ml-auto h-4 w-4',
@@ -605,7 +723,9 @@ export default function Mail() {
                             className={`flex justify-between w-full ${headerStyle}`}
                         >
                             <div className="flex items-center">
-                                <h1 className="text-xl font-bold">Inbox</h1>
+                                <h1 className="text-xl font-bold ml-2">
+                                    Inbox
+                                </h1>
                             </div>
                             <div className="h-full flex items-center">
                                 <Tabs defaultValue={`${isAllMail}`}>
@@ -733,5 +853,74 @@ export default function Mail() {
                 </ResizablePanel>
             </ResizablePanelGroup>
         </>
+    )
+}
+import * as React from 'react'
+import { CalendarIcon } from '@radix-ui/react-icons'
+import { format } from 'date-fns'
+import { Calendar } from '~/components/ui/calendar'
+
+function DatePicker({
+    children,
+    callback,
+}: {
+    children: ReactNode
+    callback: Function
+}) {
+    return (
+        <Popover onOpenChange={() => callback()}>
+            <PopoverTrigger asChild>{children}</PopoverTrigger>
+            <PopoverContent className="w-fit py-0">
+                <div className="flex">
+                    <div className="px-0 py-4">
+                        <CardTitle className="px-4 mb-4 mt-2">
+                            Snooze until
+                        </CardTitle>
+                        <CardContent className="px-0 pr-6">
+                            <Button
+                                variant="ghost"
+                                className="w-full flex justify-between content-center"
+                            >
+                                <div>Later today</div>
+                                <CardDescription className="pl-10 my-auto ">
+                                    Mon, 3:14 PM
+                                </CardDescription>
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                className="w-full flex justify-between content-center"
+                            >
+                                <div>Tomorrow</div>
+                                <CardDescription className="pl-10 my-auto ">
+                                    Tue, 11:39 AM
+                                </CardDescription>
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                className="w-full flex justify-between content-center"
+                            >
+                                <div>This Weekend</div>
+                                <CardDescription className="pl-10 my-auto ">
+                                    Sat, 11:39 AM
+                                </CardDescription>
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                className="w-full flex justify-between content-center"
+                            >
+                                <div>Next Week</div>
+                                <CardDescription className="pl-10 my-auto ">
+                                    Mon, 11:39 AM
+                                </CardDescription>
+                            </Button>
+                        </CardContent>
+                    </div>
+                    <div className="my-0">
+                        <Separator orientation="vertical"></Separator>
+                    </div>
+                    <Calendar mode="single" className="py-4" />
+                </div>
+            </PopoverContent>
+        </Popover>
     )
 }
